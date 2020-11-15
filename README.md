@@ -1,4 +1,7 @@
 # solidarity_data
+
+Created by P. Subbiah in 2020.
+
 Data and code used to analyse web articles written by Venezuelan Solidarity groups around the world (scraped using Scrapy in Python). Part of my doctoral thesis for the University of Cambridge.
 
 hov_csv2.csv is comprised of data scraped off of the handsoffvenezuela.org webpage. It includes all the articles written on the Hands off Venezuela Page.
