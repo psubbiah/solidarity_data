@@ -25,11 +25,13 @@ library(purrr)
 # Arguments
 args <- commandArgs(trailingOnly=TRUE)
 
-input_path <- '/Users/ale/solidarity_data/data/hov_csv2.csv'
-#input_path <- as.character(args[1])
-output_path <- '/Users/ale/RStudio/'
-#output_path <- as.character(args[2])
+#input_path <- '/Users/ale/solidarity_data/data/hov_csv2.csv'
+input_path <- as.character(args[1])
+output_path <- '/Users/ale/test_folder/'
+output_path <- as.character(args[2])
 #set_k <- as.double(args[3])
+
+my_colours <- c('#481567FF', '#39568CFF', '#238A8DFF', '#95D840FF', '#FDE725FF')
 
 # Read hov_csv file
 input <- read_csv(input_path)
@@ -62,7 +64,7 @@ stats_topn <- stats %>%
   filter(freq > 370)
 
 ggplot(data = stats_topn, aes(x = key, y = freq)) + 
-  geom_col(fill = my_colors[4]) + 
+  geom_col(fill = my_colours[1]) + 
   coord_flip() + 
   labs(title = "Most Ocurring Nouns",
        x = "Word", 
@@ -94,7 +96,7 @@ stats_topadj <- stats_adj_filtered %>%
   top_n(n = 20)
 
 ggplot(data = stats_topadj, aes(x = key, y = freq)) + 
-  geom_col(fill = viridis::plasma(1)) + 
+  geom_col(fill = my_colours[2]) + 
   coord_flip() + 
   labs(title = "Most Ocurring Adjectives",
        x = "Word", 
@@ -125,7 +127,7 @@ stats_topve <- stats_ve_filtered %>%
   top_n(n = 20)
 
 ggplot(data = stats_topve, aes(x = key, y = freq)) + 
-  geom_col(fill = viridis(1)) + 
+  geom_col(fill = my_colours[3]) + 
   coord_flip() + 
   labs(title = "Most Ocurring Verbs",
        x = "Word", 
@@ -143,7 +145,7 @@ print('Plot Saved successfully.')
 #Automated Keywords Extraction with RAKE - Machine Learning unsupervised algorithm
 # Starting RAKE Extraction
 
-print('Starting RAKE algorithm NOUN-PHRASE extraction')
+print('Starting RAKE algorithm NOUN-PHRASE extraction...')
 
 # stats_rake <- keywords_rake(x = x, term = "lemma", group = "doc_id",
 #                             relevant = x$upos %in% c("NOUN", "ADJ"))
@@ -175,7 +177,7 @@ stats_topnp <- stats %>%
   top_n(n = 20)
 
 ggplot(data = stats_topnp, aes(x = fct_reorder(keyword, freq), y = freq)) +
-  geom_col(fill = viridis::cividis(1)) +
+  geom_col(fill = my_colours[4]) +
   coord_flip() +
   labs(title = "Most Ocurring Noun Phrases per RAKE algorithm",
        x = "Word",
@@ -239,7 +241,7 @@ num_words <- 10 #number of words we want to see per topic
 #create function that accepts lda model and num word to display
 
 
-top_terms_per_topic <- function(lda_model, num_words) {
+top_terms_per_topic <- function(lda_model, num_words, k) {
   #tidy LDA object to get work, topic and probability (beta)
   topics_tidy <- tidy(lda_model, matrix = "beta")
   
@@ -254,23 +256,24 @@ top_terms_per_topic <- function(lda_model, num_words) {
   ungroup() %>%
   mutate(topic = paste("Topic", topic, sep = " "))
     #create a title to pass to word_chart
-  title <- paste("LDA Top Terms for", set_k, "Topics")
+  title <- paste("LDA Top Terms for", k, "Topics")
     #call the word_chart function built
   word_chart(top_terms, top_terms$term, title)
 }
 
 #display top_terms found per topic by the LDA algorithm
 print('Building Top Terms found per Topic, k = 4...')
-top_terms_per_topic(lda, num_words)
+top_terms_per_topic(lda, num_words, 4)
 
-ggsave(paste0(output_path, '/LDA_top_4terms.pdf'), width = 10, height = 10, dpi = 200)
+ggsave(paste0(output_path, '/LDA_top_4terms.pdf'), width = 8, height = 8, dpi = 200)
 print('Plot Saved successfully.')
 
 print('Building Top Terms found per Topic, k = 10...')
-top_terms_per_topic(lda3, num_words)
+top_terms_per_topic(lda3, num_words, 10)
 
-ggsave(paste0(output_path, '/LDA_top_4terms.pdf'), width = 10, height = 10, dpi = 200)
+ggsave(paste0(output_path, '/LDA_top_10terms.pdf'), width = 12, height = 10, dpi = 200)
 print('Plot Saved successfully.')
+print('End of script.')
 
 
 
