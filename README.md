@@ -1,4 +1,4 @@
-%%Documentation for Github
+
 # Textual Analysis of UK Solidarity Movements with the Bolivarian Revolution in Venezuela
 
 Created by P. Subbiah in 2020.
