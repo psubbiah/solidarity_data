@@ -1,6 +1,7 @@
 # Textual Analysis of UK Solidarity Movements with the Bolivarian Revolution in Venezuela
 
 Created by P. Subbiah in 2020.
+https://zenodo.org/badge/190767605.svg
 
 ## Introduction
 Textual Analysis insights into groups supportive of the Maduro Government in Venezuela.
