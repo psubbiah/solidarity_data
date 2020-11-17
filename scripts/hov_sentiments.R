@@ -9,7 +9,7 @@ library(tidytext)
 library(tidyr)
 library(ggplot2)
 library(ggrepel)
-library(wordcloud)
+library(wordcloud2)
 library(tm)
 library(webshot)
 library(htmlwidgets)
@@ -25,10 +25,10 @@ library(widyr)
 
 args <- commandArgs(trailingOnly=TRUE)
 
-input_path <- '/Users/ale/solidarity_data/data/hov_csv2.csv'
-#input_path <- as.character(args[1])
-output_path <- '/Users/ale/RStudio/'
-#output_path <- as.character(args[2])
+#input_path <- '/Users/ale/solidarity_data/data/hov_csv2.csv'
+input_path <- as.character(args[1])
+#output_path <- '/Users/ale/test_folder/'
+output_path <- as.character(args[2])
 
 #### ggplot theme and configs ####
 theme_hov <- function(aticks = element_blank(),
@@ -54,7 +54,7 @@ print('Reading csv file...')
 input$Title <- stripWhitespace(input$Title)
 input$Author <- stripWhitespace(input$Author)
 
-print('Tidying dataset')
+print('Tidying dataset...')
 
 # Add year column
 input <- input %>%
@@ -86,7 +86,7 @@ hov_nrc_plot %>%
   #words not points. 
   geom_point(color = "transparent") + 
   #make sure labels don't overlap
-  geom_label_repel(force = 3,
+  geom_label_repel(force = 5,
                    direction = "y",
                    segment.color = "transparent",
                    size = 3) + 
@@ -96,12 +96,12 @@ hov_nrc_plot %>%
         axis.title.x = element_text(size = 6),
         panel.grid = element_blank(), panel.background = element_blank(),
         panel.border = element_rect("lightgray", fill = NA),
-        strip.text.x = element_text(size = 9)) +
+        strip.text.x = element_text(size = 7)) +
   xlab(NULL) + ylab(NULL) + 
   ggtitle("NRC Sentiment of HOV Articles gathered from 2003-2019")
   coord_flip() 
   
-ggsave(paste0(output_path, '/sentiments_hov.pdf'), width=8, height=4)
+ggsave(paste0(output_path, '/sentiments_hov.pdf'), width=12, height=8)
 print('Saved Sentiment Analysis Plot successfully.')
 
 # graph that shows words that contribute most to each sentiment for 2017-2019  
@@ -150,7 +150,7 @@ hov_stopwords <- tibble(word = c("venezuela", "venezuelan", "de", "la", "111", "
                                  "ferrol", "u003d", "0cm", "vvn", "ate", "vez", "öfinger", "gerd",
                                  "hans", "avec", "pour", "dans", "rg"))
 
-
+print('Building Wordcloud...')
 
 word_hov <- hov_clean %>%
   filter(!word %in% hov_stopwords$word) %>%
@@ -162,9 +162,13 @@ webshot::install_phantomjs()
 
 wordcloud <- wordcloud2(word_hov[0:100, ])
 saveWidget(wordcloud, "tmp.html", selfcontained = F)
-webshot::webshot("tmp.html", "wordcloud.pdf", delay = 10, vwidth = 2000, vheight = 500)
+webshot::webshot("tmp.html", paste0(output_path, '/wordcloud.pdf'), delay = 10, vwidth = 2000, vheight = 500)
+
+print('Wordcloud saved successfully.')
 
 # Bigram analysis 
+print('Preparing data for bigram analysis...')
+
 bigram_hov <- input %>%
   select(-images, -PS, URL) %>%
   unnest_tokens(bigram, Text, token = "ngrams", n = 2)
@@ -189,9 +193,7 @@ bigram_hov_filtered <- bigram_hov_counts %>%
 bigrams_united <- bigram_hov_filtered %>%
   unite(bigram, word1, word2, sep = " ")
 
-
 # Build bigram graph
-
 print('Building bigram, i.e. visualization of Markov chain ...')
 
 # Filter for relatively common combinations
@@ -200,7 +202,6 @@ bigram_graph <- bigram_hov_filtered %>%
   graph_from_data_frame()
   
 set.seed(2020)
-
 a <- grid::arrow(type = "closed", length = unit(.08, "inches"))
 
 bigram_network <- ggraph(bigram_graph, layout = "fr") +
@@ -211,8 +212,7 @@ bigram_network <- ggraph(bigram_graph, layout = "fr") +
   theme_void()
 
 ggsave(paste0(output_path, '/bigram.pdf'), width = 12, height = 6, dpi = 200)
-
-print('Bigram network analysis saved')
+print('Bigram network analysis saved successfully.')
 
 # Examine Pair-wide correlation, i.e how often they appear together 
 # relative to how often they appear separately
