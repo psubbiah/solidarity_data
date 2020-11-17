@@ -21,7 +21,7 @@ First install Scrapy
 
 After moving the solidarity spider to your desired folder, from that folder, run: 
 
-	Scrapy crawl solidarity - o solidarity.csv 
+	scrapy crawl solidarity - o solidarity.csv 
 
 To save the output of the spider onto a csv file, that you will then use to run the analyses.
 
