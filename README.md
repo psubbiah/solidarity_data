@@ -17,6 +17,7 @@ In this project, I analyse the discourse of ‘solidarity’ by documenting the 
 The data used for the analysis was scraped by building a custom ‘Scrapy spider’, which you can find under the folder “solidarity.” The spider scraped all the articles published on the Hands Off Venezuela website, that date back to 2003. The spider is written in Python, and you can run the spider by running the following commands:
 
 First install Scrapy
+
 	pip install Scrapy 
 
 After moving the solidarity spider to your desired folder, from that folder, run: 
