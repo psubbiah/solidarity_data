@@ -20,11 +20,11 @@ The data used for the analysis was scraped by building a custom ‘Scrapy spider
 
 First install Scrapy:
 
-	pip install Scrapy 
+	pip install scrapy 
 
 Run the spider, from inside the solidarity directory, by typing:
 
-	scrapy crawl solidarity - o solidarity.csv 
+	scrapy crawl solidarity -o solidarity.csv 
 
 Again, make sure you are in the solidarity directory or Scrapy will not be able to find the files it needs to run. This particular command will save the output of the spider onto a .csv file, that you will then use to run the analyses.
 
